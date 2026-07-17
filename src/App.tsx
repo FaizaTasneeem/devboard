@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import './App.css'
 import Logo from './components/Logo';
+import RepoSearchPlaceholder from './components/RepoSearchPlaceholder';
+
 
 type Repository = {
   id: number,
@@ -12,29 +15,21 @@ type Repository = {
 const token = import.meta.env.VITE_GITHUB_TOKEN;
 
 function App() {
-  const [query, setQuery] = useState("");
-  const [debouncedQuery, setDebouncedQuery] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const query = searchParams.get("q") || "";
+
+  const [inputVal, setInputVal] = useState(query);
+  const [prevQuery, setPrevQuery] = useState(query);
 
   const { isLoading, isError, data, error } = useQuery<Repository[]>({
-    queryKey: ["repo", debouncedQuery],
-    queryFn: () => searchRepos(debouncedQuery),
-    enabled: debouncedQuery.length > 0,
-    // staleTime: 5 * 60 * 1000
+    queryKey: ["repo", query],
+    queryFn: () => searchRepos(query),
+    enabled: query.length > 0,
+    staleTime: 5 * 60 * 1000
   });
 
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedQuery(query);
-    }, 500);
-
-    return () => clearTimeout(timer);
-
-  }, [query])
-
   async function searchRepos(repo: string) {
-    console.log(repo);
-    // return repodemo;
     const { data } = await axios.get(`https://api.github.com/search/repositories?q=${repo}&sort=stars`,
       {
         headers: {
@@ -42,9 +37,27 @@ function App() {
         }
       }
     );
-    console.log();
     return data.items;
   }
+
+
+  if (query !== prevQuery) {
+    setPrevQuery(query);
+    setInputVal(query);
+  }
+
+
+  useEffect(() => {
+    if (inputVal === query) return;
+
+    const timer = setTimeout(() => {
+      setSearchParams({ q: inputVal });
+    }, 500);
+
+    return () => clearTimeout(timer);
+
+  }, [inputVal]);
+
 
   if (isError) return (
     <div className='min-h-screen p-10 flex flex-col justify-start items-start bg-[#0d1117] text-red-300'>
@@ -52,11 +65,12 @@ function App() {
     </div>
   )
 
+
   return (
-    <div className='min-h-screen p-10 flex flex-col justify-start items-start bg-[#0d1117] '>
+    <div className='min-h-screen p-10 flex flex-col bg-[#0d1117] '>
       <div className="w-full flex flex-row justify-start gap-4">
         <Logo />
-        <input type="text" value={query} onChange={(e) => setQuery(e.target.value)} className='w-1/2 text-gray-300 bg-gray-700 p-2 border border-gray-400 rounded-lg' disabled={isLoading} placeholder="🔍 Enter repository names, e.g. react query, owner:vercel..." />
+        <input type="text" value={inputVal} onChange={(e) => setInputVal(e.target.value)} className='w-1/2 text-gray-300 bg-gray-700 p-2 border border-gray-400 rounded-lg' disabled={isLoading} placeholder="🔍 Enter repository names, e.g. react query, owner:vercel..." />
       </div>
       <hr className="w-full h-px my-4 bg-gray-600" />
 
@@ -74,6 +88,10 @@ function App() {
             </div>
           )
         })}
+
+        {query.length === 0 &&
+          <RepoSearchPlaceholder />
+        }
 
       </div>
     </div>
