@@ -5,12 +5,9 @@ import axios from 'axios';
 import './App.css'
 import Logo from './components/Logo';
 import RepoSearchPlaceholder from './components/RepoSearchPlaceholder';
-
-
-type Repository = {
-  id: number,
-  name: string
-}
+import NoResultsFound from './components/NoResultsFound';
+import SearchResults from './components/SearchResults';
+import type { Repository } from './types';
 
 const token = import.meta.env.VITE_GITHUB_TOKEN;
 
@@ -21,7 +18,7 @@ function App() {
   const [inputVal, setInputVal] = useState(query);
   const [prevQuery, setPrevQuery] = useState(query);
 
-  const { isLoading, isError, data, error } = useQuery<Repository[]>({
+  const { isLoading, isError, data, error } = useQuery<{ total_count: number, items: Repository[] }>({
     queryKey: ["repo", query],
     queryFn: () => searchRepos(query),
     enabled: query.length > 0,
@@ -37,7 +34,7 @@ function App() {
         }
       }
     );
-    return data.items;
+    return { total_count: data.total_count, items: data.items };
   }
 
 
@@ -81,17 +78,15 @@ function App() {
           </div>
         )}
 
-        {data?.map((item: Repository) => {
-          return (
-            <div key={item.id} className='text-gray-300 '>
-              {item.name}
-            </div>
-          )
-        })}
-
         {query.length === 0 &&
           <RepoSearchPlaceholder />
         }
+
+        {!isLoading && data && data.items.length === 0 &&
+          <NoResultsFound />
+        }
+
+        {data && data.items.length !== 0 && <SearchResults total_count={data.total_count} items={data.items} />}
 
       </div>
     </div>
