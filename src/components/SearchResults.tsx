@@ -1,14 +1,17 @@
+import { useNavigate } from "react-router-dom";
 import { GoStar, GoRepoForked, GoIssueOpened } from "react-icons/go";
 import type { Repository } from "../types";
 
 function SearchResults({ total_count, items }: { total_count: number, items: Repository[] }) {
+    const navigate = useNavigate();
+
     return (
         <div className="flex flex-col justify-start items-start">
             <span className="text-gray-500 font-small mb-4">{total_count.toLocaleString()} results . sorted by ⭐</span>
 
             {items?.map((item: Repository) => {
                 return (
-                    <div key={item.id} className='w-full p-4 my-2 bg-gray-900 border border-gray-600 hover:border-blue-600 hover:cursor-pointer rounded-lg flex gap-4'>
+                    <div key={item.id} className='w-full p-4 my-2 bg-gray-900 border border-gray-600 hover:border-blue-600 hover:cursor-pointer rounded-lg flex gap-4' onClick={() => navigate(`repo/${item.owner.login}/${item.name}`)}>
                         <div className="w-8 h-8 rounded-full border border-gray-600 overflow-hidden">
                             <img src={item.owner.avatar_url} alt="avatar" />
                         </div>

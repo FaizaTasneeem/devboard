@@ -55,15 +55,8 @@ function Dashboard() {
     }, [inputVal]);
 
 
-    if (isError) return (
-        <div className='min-h-screen p-10 flex flex-col justify-start items-start bg-[#0d1117] text-red-300'>
-            Error occured during fetching: {error.message}
-        </div>
-    )
-
-
     return (
-        <div className='min-h-screen p-10 flex flex-col bg-[#0d1117] '>
+        <div className='min-h-screen p-10 flex flex-col bg-[#0d1117]'>
             <div className="w-full flex flex-row justify-start gap-4">
                 <Logo />
                 <input type="text" value={inputVal} onChange={(e) => setInputVal(e.target.value)} className='w-1/2 text-gray-300 bg-gray-700 p-2 border border-gray-400 rounded-lg' disabled={isLoading} placeholder="🔍 Enter repository names, e.g. react query, owner:vercel..." />
@@ -71,6 +64,12 @@ function Dashboard() {
             <hr className="w-full h-px my-4 bg-gray-600" />
 
             <div className="flex flex-col p-4 text-gray-300 ">
+                {isError && (
+                    <div className='min-h-screen p-10 flex flex-col justify-start items-start bg-[#0d1117] text-red-300'>
+                        Error occured during fetching: {error.message}
+                    </div>
+                )}
+
                 {isLoading && (
                     <div className=''>
                         Loading...
