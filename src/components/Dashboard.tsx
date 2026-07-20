@@ -64,15 +64,15 @@ function Dashboard() {
             <hr className="w-full h-px my-4 bg-gray-600" />
 
             <div className="flex flex-col p-4 text-gray-300 ">
-                {isError && (
-                    <div className='min-h-screen p-10 flex flex-col justify-start items-start bg-[#0d1117] text-red-300'>
-                        Error occured during fetching: {error.message}
-                    </div>
-                )}
-
                 {isLoading && (
                     <div className=''>
                         Loading...
+                    </div>
+                )}
+
+                {isError && (
+                    <div className='min-h-screen p-10 flex flex-col justify-start items-start bg-[#0d1117] text-red-300'>
+                        Error occured during fetching: {error.message}
                     </div>
                 )}
 

@@ -4,7 +4,7 @@ import axios from "axios";
 import { GoTag, GoIssueOpened, GoRepoForked, GoEye, GoStar, GoLinkExternal } from "react-icons/go";
 import type { Repository } from "../types";
 import Logo from "./Logo";
-
+import OpenIssues from "./OpenIssues";
 
 const token = import.meta.env.VITE_GITHUB_TOKEN;
 
@@ -24,19 +24,8 @@ function RepoDetails() {
                 }
             }
         );
-
-        console.log(data)
         return data;
     }
-
-    if (isLoading) {
-        return <div className="">Loading...</div>
-    }
-
-    if (isError) {
-        return <div className="">Error occured during fetching repository details: {error.message}</div>
-    }
-
 
     return (
         <div className="min-h-screen p-10 flex flex-col bg-[#0d1117]">
@@ -45,12 +34,24 @@ function RepoDetails() {
                 <hr className="w-full h-px my-4 bg-gray-600" />
             </div>
 
-            <div className='w-full p-4 my-2 bg-gray-900 border border-gray-600 rounded-lg flex gap-4 '>
-                {data && <div className="w-10 h-10 rounded-lg border border-gray-600 overflow-hidden">
-                    <img src={data.owner.avatar_url} alt="avatar" />
-                </div>}
+            {isLoading && (
+                <div className='text-gray-300'>
+                    Loading...
+                </div>
+            )}
 
-                {data && <div className="w-[95%] flex flex-col">
+            {isError && (
+                <div className='min-h-screen p-10 flex flex-col justify-start items-start bg-[#0d1117] text-red-300'>
+                    Error occured during fetching repository details: {error.message}
+                </div>
+            )}
+
+            {data && <div className='w-full p-4 my-2 bg-gray-900 border border-gray-600 rounded-lg flex gap-4 '>
+                <div className="w-10 h-10 rounded-lg border border-gray-600 overflow-hidden">
+                    <img src={data.owner.avatar_url} alt="avatar" />
+                </div>
+
+                <div className="w-[95%] flex flex-col">
                     <div className="w-full flex text-base font-mono font-medium pl-1 justify-between">
                         <span className="text-gray-400">{owner}/
                             <span className="text-white">{name}</span>
@@ -91,11 +92,11 @@ function RepoDetails() {
                         </span>
                         <span className="flex datas-center gap-1">
                             <span className="w-3 h-3 rounded-full bg-yellow-400 inline-block"></span>
-                            {data.language}
+                            {data.language || "N/A"}
                         </span>
                         <span className="flex datas-center gap-1">
                             <GoTag className="w-3.5 h-3.5" />
-                            {data.license.spdx_id}
+                            {data.license?.spdx_id || "N/A"}
                         </span>
                     </div>
 
@@ -109,9 +110,17 @@ function RepoDetails() {
                         })}
 
                     </div>
-                </div>}
+                </div>
 
-            </div>
+            </div>}
+
+            {data &&
+                <>
+                    <h2 className="mt-6 mb-2 text-white">Open Issues <span className="text-gray-600">({data.open_issues_count} total)</span></h2>
+                    <OpenIssues />
+                </>
+            }
+
 
         </div>
     )

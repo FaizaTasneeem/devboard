@@ -19,7 +19,7 @@ function SearchResults({ total_count, items }: { total_count: number, items: Rep
                         <div className="w-[95%] flex flex-col">
                             <div className="text-blue-400 text-base font-mono font-medium">{item.name}</div>
 
-                            <div className="text-gray-400 text-sm font-sans font-normal">{item.description}</div>
+                            <div className="text-gray-400 text-sm font-sans font-normal">{item.description || "N/A"}</div>
 
                             <div className="flex flex-row gap-4 text-gray-500 text-xs font-sans font-normal p-2">
                                 <span className="flex items-center gap-1">
@@ -36,7 +36,7 @@ function SearchResults({ total_count, items }: { total_count: number, items: Rep
                                 </span>
                                 <span className="flex items-center gap-1">
                                     <span className="w-3 h-3 rounded-full bg-yellow-400 inline-block"></span>
-                                    {item.language}
+                                    {item.language || "N/A"}
                                 </span>
                             </div>
 
