@@ -1,4 +1,5 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 function OpenIssues({ owner, name }) {
     const { data } = useInfiniteQuery({
@@ -9,7 +10,9 @@ function OpenIssues({ owner, name }) {
     });
 
     async function fetchIssues({ pageParam }: { pageParam: number }) {
+        const { data } = await axios.get(`https://api.github.com/repos/${owner}/${name}/issues`)
         return {
+            data: data,
             nextPage: pageParam + 1
         }
 
@@ -19,6 +22,9 @@ function OpenIssues({ owner, name }) {
         <div className="flex">
 
             <div className="w-full p-4 my-2 bg-gray-900 border border-gray-600 rounded-lg flex flex-col gap-2">
+                {/* {data.map((page) => {
+
+                })} */}
 
             </div>
         </div>
