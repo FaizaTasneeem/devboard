@@ -1,4 +1,20 @@
-function OpenIssues() {
+import { useInfiniteQuery } from "@tanstack/react-query";
+
+function OpenIssues({ owner, name }) {
+    const { data } = useInfiniteQuery({
+        queryKey: ['issues', owner, name],
+        queryFn: fetchIssues,
+        initialPageParam: 0,
+        getNextPageParam: (lastPage) => lastPage.nextPage ?? undefined
+    });
+
+    async function fetchIssues({ pageParam }: { pageParam: number }) {
+        return {
+            nextPage: pageParam + 1
+        }
+
+    }
+
     return (
         <div className="flex">
 

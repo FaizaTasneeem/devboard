@@ -117,7 +117,7 @@ function RepoDetails() {
             {data &&
                 <>
                     <h2 className="mt-6 mb-2 text-white">Open Issues <span className="text-gray-600">({data.open_issues_count} total)</span></h2>
-                    <OpenIssues />
+                    <OpenIssues owner={owner} name={name} />
                 </>
             }
 
