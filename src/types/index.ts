@@ -17,3 +17,20 @@ export type Repository = {
         spdx_id: string
     } | null
 }
+
+
+export type Issue = {
+    id: number,
+    title: string,
+    number: number,
+    labels: {
+        id: number,
+        name: string,
+        color: string
+    }[],
+    created_at: string,
+    user: {
+        login: string
+    }
+    comments: number
+}

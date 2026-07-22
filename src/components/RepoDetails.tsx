@@ -1,7 +1,8 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { GoTag, GoIssueOpened, GoRepoForked, GoEye, GoStar, GoLinkExternal } from "react-icons/go";
+import { GoTag, GoRepoForked, GoEye, GoStar, GoLinkExternal } from "react-icons/go";
+import { IoAlertCircleOutline } from "react-icons/io5";
 import type { Repository } from "../types";
 import Logo from "./Logo";
 import OpenIssues from "./OpenIssues";
@@ -17,7 +18,8 @@ function RepoDetails() {
     })
 
     async function searchRepoDetails(owner: string, name: string) {
-        const { data } = await axios.get(`https://api.github.com/repos/${owner}/${name}`,
+        const { data } = await axios.get(
+            `https://api.github.com/repos/${owner}/${name}`,
             {
                 headers: {
                     authorization: `Bearer ${token}`
@@ -87,7 +89,7 @@ function RepoDetails() {
                             <div className="text-white font-medium">{data.watchers_count.toLocaleString()} <span className="pl-1 text-gray-400">watchers</span></div>
                         </span>
                         <span className="flex datas-center gap-1">
-                            <GoIssueOpened className="w-3.5 h-3.5" />
+                            <IoAlertCircleOutline className="w-3.5 h-3.5" />
                             <div className="text-white font-medium">{data.open_issues_count.toLocaleString()} <span className="pl-1 text-gray-400">issues</span></div>
                         </span>
                         <span className="flex datas-center gap-1">

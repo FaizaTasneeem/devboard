@@ -26,7 +26,8 @@ function Dashboard() {
 
 
     async function searchRepos(repo: string) {
-        const { data } = await axios.get(`https://api.github.com/search/repositories?q=${repo}&sort=stars`,
+        const { data } = await axios.get(
+            `https://api.github.com/search/repositories?q=${repo}&sort=stars`,
             {
                 headers: {
                     'authorization': `Bearer ${token}`
