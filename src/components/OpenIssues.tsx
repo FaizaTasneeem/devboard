@@ -39,6 +39,10 @@ function OpenIssues({ owner, name }: { owner: string, name: string }) {
 
     }
 
+    function handleIssueClick(url: string) {
+        window.open(url, '_blank', 'noopener,noreferrer');
+    }
+
     useEffect(() => {
         if (inView && hasNextPage && !isFetchingNextPage) fetchNextPage();
 
@@ -58,6 +62,7 @@ function OpenIssues({ owner, name }: { owner: string, name: string }) {
                                         className={`group/issue p-4 flex gap-2 text-gray-400 hover:bg-gray-800 hover:cursor-pointer ${issueIdx === page.data.length - 1 ? '' : 'border-b'} ${issueIdx === 0 && pageIdx !== 0 ? 'border-t ' : ''} border-gray-700`}
                                         onMouseEnter={() => setShowIssueHoverEffect(issue.id)}
                                         onMouseLeave={() => setShowIssueHoverEffect(0)}
+                                        onClick={() => handleIssueClick(issue.html_url)}
                                     >
                                         <IoAlertCircleOutline className="mt-1 w-5 h-5 text-green-500" />
                                         <div className="w-full flex flex-col text-gray-200">

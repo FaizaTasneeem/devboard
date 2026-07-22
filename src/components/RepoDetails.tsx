@@ -29,6 +29,10 @@ function RepoDetails() {
         return data;
     }
 
+    function handleGitHubClick(url: string) {
+        window.open(url, '_blank', 'noopener,noreferrer');
+    }
+
     return (
         <div className="min-h-screen p-10 flex flex-col bg-[#0d1117]">
             <div className="flex flex-col items-start">
@@ -63,12 +67,12 @@ function RepoDetails() {
                         <div className="flex gap-2">
                             <button className="p-2 py-1 font-medium border border-gray-500 text-gray-500 rounded-lg cursor-pointer flex items-center justify-center gap-2">
                                 <GoStar className="w-3.5 h-3.5" />
-                                <span className="">Watch</span>
+                                <span>Watch</span>
                             </button>
 
                             <button className="p-2 py-1 font-medium border border-gray-500 text-gray-500 rounded-lg cursor-pointer flex items-center justify-center gap-2">
                                 <GoLinkExternal className="w-3.5 h-3.5" />
-                                <span className="">GitHub</span>
+                                <span onClick={() => handleGitHubClick(data.html_url)}>GitHub</span>
                             </button>
                         </div>
                     </div>

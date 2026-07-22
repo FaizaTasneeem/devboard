@@ -15,7 +15,8 @@ export type Repository = {
     },
     license: {
         spdx_id: string
-    } | null
+    } | null,
+    html_url: string
 }
 
 
@@ -32,5 +33,6 @@ export type Issue = {
     user: {
         login: string
     }
-    comments: number
+    comments: number,
+    html_url: string
 }
