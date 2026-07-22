@@ -72,7 +72,7 @@ function OpenIssues({ owner, name }: { owner: string, name: string }) {
                                                         {issue.title}
                                                     </span>
                                                     {issue.labels?.map((label) => (
-                                                        <div key={label.id} style={{ backgroundColor: `#${label.color}20`, borderColor: `#${label.color}40`, color: `#${label.color}` }} className="px-1 py-0.5 text-xs border rounded-sm bg-red-600">
+                                                        <div key={label.id} style={{ backgroundColor: `#${label.color}20`, borderColor: `#${label.color}40`, color: `#${label.color}` }} className="w-20 px-1 py-0.5 text-xs border rounded-sm bg-red-600 truncate">
                                                             {label.name}
                                                         </div>
                                                     ))}
