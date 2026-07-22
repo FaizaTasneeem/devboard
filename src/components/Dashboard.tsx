@@ -21,7 +21,7 @@ function Dashboard() {
         queryKey: ["repo", query],
         queryFn: () => searchRepos(query),
         enabled: query.length > 0,
-        staleTime: 5 * 60 * 1000
+        // staleTime: 5 * 60 * 1000
     });
 
 
