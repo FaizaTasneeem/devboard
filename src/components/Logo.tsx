@@ -2,7 +2,7 @@
 function Logo() {
     return (
         <div className="flex justify-center items-center gap-2 text-white">
-            <div className="p-1.5 bg-blue-500 rounded-lg flex items-center justify-center">
+            <div className="p-2 bg-[#3b82f6] rounded-xl flex items-center justify-center">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
@@ -17,7 +17,8 @@ function Logo() {
                     <polyline points="8 6 2 12 8 18" />
                 </svg>
             </div>
-            <span className="font-bold">DevBoard</span>
+
+            <span className="font-medium font-sans">DevBoard</span>
         </div>
     )
 }
