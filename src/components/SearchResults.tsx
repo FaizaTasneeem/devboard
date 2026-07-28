@@ -12,7 +12,11 @@ function SearchResults({ items }: { items: Repository[] }) {
     });
 
     function handleRepoClick(event: React.MouseEvent<HTMLDivElement>, item: Repository) {
-        navigate(`repo/${item.owner.login}/${item.name}`);
+        const target = event.target as HTMLElement;
+        const starButton = target.closest(".star-btn");
+        if (starButton) {
+            navigate(`repo/${item.owner.login}/${item.name}`);
+        }
     }
 
     async function addToWatchList(item: Repository) {
@@ -65,7 +69,7 @@ function SearchResults({ items }: { items: Repository[] }) {
                             </div>
                         </div>
 
-                        <div className="top-2 right-2 w-8 h-8 p-2 border border-gray-600 rounded-sm cursor-pointer flex justify-center hover:border-yellow-500 hover:text-yellow-500 absolute" onClick={() => mutateAsync(item)}>
+                        <div className="star-btn top-2 right-2 w-8 h-8 p-2 border border-gray-600 rounded-sm cursor-pointer flex justify-center hover:border-yellow-500 hover:text-yellow-500 absolute" onClick={() => mutateAsync(item)}>
                             <GoStar className="w-3.5 h-3.5" />
                         </div>
                     </div>
