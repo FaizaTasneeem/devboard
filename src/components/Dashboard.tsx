@@ -73,13 +73,13 @@ function Dashboard() {
 
     return (
         <div className='w-full min-h-screen p-10 flex flex-col bg-[#0d1117]'>
-            <div className="w-full flex flex-row md:justify-center gap-8">
+            <div className="w-full flex flex-row md:justify-center gap-10">
                 <Logo />
                 <input type="text" value={inputVal} onChange={(e) => setInputVal(e.target.value)} className='w-2/3 p-2 text-[#d1d5db] bg-[#131927] border border-[#212b3e] rounded-full font-mono placeholder-[#3e4c6e]' disabled={isLoading} placeholder="🔍 Enter repository names, e.g. react query, owner:vercel..." />
             </div>
             <hr className="w-full h-px my-4 bg-gray-600" />
 
-            <div className="w-full px-32 flex justify-center items-start gap-2">
+            <div className="w-full flex justify-center items-start gap-2">
                 <div className="w-2/3 flex flex-col p-4 text-gray-300 ">
                     {isLoading && <div className="p-4 text-gray-400">Loading...</div>}
 

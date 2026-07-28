@@ -1,21 +1,32 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { GoStar } from "react-icons/go";
 import type { Repository } from "../types";
 
 function Watchlist() {
+    const queryClient = useQueryClient();
+
     const [showCrossButton, setShowCrossButton] = useState(-1);
+
     const { isLoading, isError, data, error } = useQuery({
         queryKey: ['watchlist'],
         queryFn: fetchWatchList
-
     });
+
+    const { mutateAsync } = useMutation({
+        mutationFn: deleteWatchList,
+        onSuccess: () => queryClient.invalidateQueries({ queryKey: ['watchlist'] })
+    })
 
 
     async function fetchWatchList() {
         const { data } = await axios.get(`http://localhost:4000/watchlist`);
-        console.log(data);
+        return data;
+    }
+
+    async function deleteWatchList(id: string) {
+        const { data } = await axios.delete(`http://localhost:4000/watchlist/${id}`);
         return data;
     }
 
@@ -65,7 +76,7 @@ function Watchlist() {
                         >
                             <span className="flex justify-between text-blue-400 ">
                                 {item.name}
-                                {showCrossButton === idx && <button className="text-gray-600 cursor-pointer">x</button>}
+                                {showCrossButton === idx && <button className="text-gray-600 cursor-pointer" onClick={() => mutateAsync(item.id)}>x</button>}
                             </span>
                             <div className="flex gap-2 text-gray-600">
                                 <span className="flex gap-1 items-center">

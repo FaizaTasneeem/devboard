@@ -1,7 +1,8 @@
 
 export type Repository = {
-    id: number,
+    id: string,
     name: string,
+    full_name: string,
     description: string | null,
     topics: string[],
     stargazers_count: number,

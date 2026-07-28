@@ -1,20 +1,32 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import { GoStar, GoRepoForked, GoIssueOpened } from "react-icons/go";
 import type { Repository } from "../types";
-import axios from "axios";
 
 function SearchResults({ items }: { items: Repository[] }) {
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
+
+    const { data } = useQuery({
+        queryKey: ['watchlist'],
+        queryFn: fetchWatchList
+    });
+
+    async function fetchWatchList() {
+        const { data } = await axios.get(`http://localhost:4000/watchlist`);
+        return data;
+    }
 
     const { mutateAsync } = useMutation({
-        mutationFn: addToWatchList
+        mutationFn: addToWatchList,
+        onSuccess: () => queryClient.invalidateQueries({ queryKey: ['watchlist'] })
     });
 
     function handleRepoClick(event: React.MouseEvent<HTMLDivElement>, item: Repository) {
         const target = event.target as HTMLElement;
         const starButton = target.closest(".star-btn");
-        if (starButton) {
+        if (!starButton) {
             navigate(`repo/${item.owner.login}/${item.name}`);
         }
     }
@@ -69,8 +81,8 @@ function SearchResults({ items }: { items: Repository[] }) {
                             </div>
                         </div>
 
-                        <div className="star-btn top-2 right-2 w-8 h-8 p-2 border border-gray-600 rounded-sm cursor-pointer flex justify-center hover:border-yellow-500 hover:text-yellow-500 absolute" onClick={() => mutateAsync(item)}>
-                            <GoStar className="w-3.5 h-3.5" />
+                        <div className={`star-btn top-2 right-2 w-8 h-8 p-2 border rounded-sm cursor-pointer flex justify-center hover:border-yellow-500 hover:text-yellow-500 absolute ${data.find(watchedItem => watchedItem.full_name === item.full_name) ? 'border-yellow-500 text-yellow-500' : 'border-gray-600 '}`} onClick={() => mutateAsync(item)}>
+                            <GoStar className={`w-3.5 h-3.5`} />
                         </div>
                     </div>
                 )
