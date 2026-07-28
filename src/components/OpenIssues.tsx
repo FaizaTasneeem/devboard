@@ -9,7 +9,7 @@ import type { Issue } from "../types";
 const token = import.meta.env.VITE_GITHUB_TOKEN;
 
 function OpenIssues({ owner, name }: { owner: string, name: string }) {
-    const [showIssueHoverEffect, setShowIssueHoverEffect] = useState(0);
+    const [showIssueHoverEffect, setShowIssueHoverEffect] = useState(-1);
 
     const issues_per_page = 20;
 
@@ -59,7 +59,7 @@ function OpenIssues({ owner, name }: { owner: string, name: string }) {
                                 return (
                                     <div
                                         key={issue.id}
-                                        className={`group/issue p-4 flex gap-2 text-gray-400 hover:bg-gray-800 hover:cursor-pointer ${issueIdx === page.data.length - 1 ? '' : 'border-b'} ${issueIdx === 0 && pageIdx !== 0 ? 'border-t ' : ''} border-gray-700`}
+                                        className={`group/issue p-4 flex gap-2 text-gray-400 hover:bg-gray-800 hover:rounded-lg hover:cursor-pointer ${issueIdx === page.data.length - 1 ? '' : 'border-b'} ${issueIdx === 0 && pageIdx !== 0 ? 'border-t ' : ''} border-gray-700`}
                                         onMouseEnter={() => setShowIssueHoverEffect(issue.id)}
                                         onMouseLeave={() => setShowIssueHoverEffect(0)}
                                         onClick={() => handleIssueClick(issue.html_url)}

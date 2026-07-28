@@ -1,15 +1,30 @@
+import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { GoStar, GoRepoForked, GoIssueOpened } from "react-icons/go";
 import type { Repository } from "../types";
+import axios from "axios";
 
 function SearchResults({ items }: { items: Repository[] }) {
     const navigate = useNavigate();
+
+    const { mutateAsync } = useMutation({
+        mutationFn: addToWatchList
+    });
+
+    function handleRepoClick(event: React.MouseEvent<HTMLDivElement>, item: Repository) {
+        navigate(`repo/${item.owner.login}/${item.name}`);
+    }
+
+    async function addToWatchList(item: Repository) {
+        const res = await axios.post(`http://localhost:4000/watchlist`, item);
+        return res;
+    }
 
     return (
         <div className="flex flex-col justify-start items-start">
             {items?.map((item: Repository) => {
                 return (
-                    <div key={item.id} className='w-full p-4 my-2 bg-gray-900 border border-gray-600 hover:border-blue-600 hover:cursor-pointer rounded-lg flex gap-4' onClick={() => navigate(`repo/${item.owner.login}/${item.name}`)}>
+                    <div key={item.id} className='w-full p-4 my-2 bg-gray-900 border border-gray-600 hover:border-blue-600 hover:cursor-pointer rounded-lg flex gap-4 relative' onClick={(event) => handleRepoClick(event, item)}>
                         <div className="w-8 h-8 rounded-full border border-gray-600 overflow-hidden">
                             <img src={item.owner.avatar_url} alt="avatar" />
                         </div>
@@ -50,7 +65,7 @@ function SearchResults({ items }: { items: Repository[] }) {
                             </div>
                         </div>
 
-                        <div className="w-8 h-8 p-2 border border-gray-600 rounded-lg cursor-pointer flex justify-center">
+                        <div className="top-2 right-2 w-8 h-8 p-2 border border-gray-600 rounded-sm cursor-pointer flex justify-center hover:border-yellow-500 hover:text-yellow-500 absolute" onClick={() => mutateAsync(item)}>
                             <GoStar className="w-3.5 h-3.5" />
                         </div>
                     </div>
