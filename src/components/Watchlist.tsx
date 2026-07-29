@@ -37,7 +37,7 @@ function Watchlist() {
                 <div className="flex items-center gap-2">
                     <span className="text-white">⭐ Watchlist</span>
                 </div>
-                {data && <span className="">{data.length} repos</span>}
+                {data && <span className="">{data.length} repo(s)</span>}
             </div>
             <hr className="bg-[#212b3e]" />
 

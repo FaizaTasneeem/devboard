@@ -8,6 +8,7 @@ function SearchResults({ items }: { items: Repository[] }) {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
 
+
     const { data } = useQuery({
         queryKey: ['watchlist'],
         queryFn: fetchWatchList
@@ -18,10 +19,28 @@ function SearchResults({ items }: { items: Repository[] }) {
         return data;
     }
 
+
     const { mutateAsync } = useMutation({
         mutationFn: addToWatchList,
         onSuccess: () => queryClient.invalidateQueries({ queryKey: ['watchlist'] })
     });
+
+    async function addToWatchList(item: Repository) {
+        const watchedRepo = data?.find((watchItem: Repository) => watchItem.full_name === item.full_name)
+        if (watchedRepo) {
+            await deleteFromWatchList(watchedRepo.id);
+            return;
+        }
+
+        const res = await axios.post(`http://localhost:4000/watchlist`, item);
+        return res;
+    }
+
+    async function deleteFromWatchList(id: string) {
+        const { data } = await axios.delete(`http://localhost:4000/watchlist/${id}`);
+        return data;
+    }
+
 
     function handleRepoClick(event: React.MouseEvent<HTMLDivElement>, item: Repository) {
         const target = event.target as HTMLElement;
@@ -31,10 +50,6 @@ function SearchResults({ items }: { items: Repository[] }) {
         }
     }
 
-    async function addToWatchList(item: Repository) {
-        const res = await axios.post(`http://localhost:4000/watchlist`, item);
-        return res;
-    }
 
     return (
         <div className="flex flex-col justify-start items-start">
@@ -81,7 +96,10 @@ function SearchResults({ items }: { items: Repository[] }) {
                             </div>
                         </div>
 
-                        <div className={`star-btn top-2 right-2 w-8 h-8 p-2 border rounded-sm cursor-pointer flex justify-center hover:border-yellow-500 hover:text-yellow-500 absolute ${data.find(watchedItem => watchedItem.full_name === item.full_name) ? 'border-yellow-500 text-yellow-500' : 'border-gray-600 '}`} onClick={() => mutateAsync(item)}>
+                        <div
+                            className={`star-btn top-2 right-2 w-8 h-8 p-2 border rounded-sm cursor-pointer flex justify-center hover:border-yellow-500 hover:text-yellow-500 absolute ${data?.find(watchedItem => watchedItem.full_name === item.full_name) ? 'border-yellow-500 text-yellow-500' : 'border-gray-600 '}`}
+                            onClick={() => mutateAsync(item)}
+                        >
                             <GoStar className={`w-3.5 h-3.5`} />
                         </div>
                     </div>
