@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { GoStar } from "react-icons/go";
 import type { Repository } from "../types";
-import RemoveWatchItems from "./RemoveWatchItems";
+import WatchlistItemNote from "./WatchlistItemNote";
 
 function Watchlist() {
     const queryClient = useQueryClient();
@@ -42,12 +42,8 @@ function Watchlist() {
     }
 
 
-    function handleWatchItemClick(event: React.MouseEvent<HTMLDivElement>, url: string) {
-        const target = event.target as HTMLElement;
-        const crossBtn = target.closest('.cross-btn');
-        if (!crossBtn) {
-            window.open(url, '_blank', 'noopener,noreferrer');
-        }
+    function handleWatchItemClick(url: string) {
+        window.open(url, '_blank', 'noopener,noreferrer');
     }
 
 
@@ -93,11 +89,19 @@ function Watchlist() {
                             className={`p-2 px-4 flex flex-col cursor-pointer ${idx === data.length - 1 ? '' : 'border-b border-gray-700'}`}
                             onMouseEnter={() => setShowCrossButton(idx)}
                             onMouseLeave={() => setShowCrossButton(-1)}
-                            onClick={(event) => handleWatchItemClick(event, item.html_url)}
+                            onClick={() => handleWatchItemClick(item.html_url)}
                         >
                             <span className="flex justify-between text-blue-400 ">
                                 {item.name}
-                                {showCrossButton === idx && <button className="cross-btn text-gray-600 cursor-pointer" onClick={() => mutateAsync(item.id)}>x</button>}
+                                {showCrossButton === idx &&
+                                    <button
+                                        className="text-gray-600 cursor-pointer"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            mutateAsync(item.id);
+                                        }}
+                                    >x</button>
+                                }
                             </span>
                             <div className="flex gap-2 text-gray-600">
                                 <span className="flex gap-1 items-center">
@@ -110,7 +114,7 @@ function Watchlist() {
                                 </span>
 
                             </div>
-                            <RemoveWatchItems item={item} />
+                            <WatchlistItemNote item={item} />
 
                         </div>
                     ))}

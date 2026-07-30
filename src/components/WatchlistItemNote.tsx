@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-function RemoveWatchItems({ item }) {
+function WatchlistItemNote({ item }) {
     const queryClient = useQueryClient();
     const [inputText, setInputText] = useState(item.note || "");
 
@@ -39,4 +39,4 @@ function RemoveWatchItems({ item }) {
     )
 }
 
-export default RemoveWatchItems
+export default WatchlistItemNote

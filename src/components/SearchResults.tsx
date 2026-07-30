@@ -58,12 +58,8 @@ function SearchResults({ items }: { items: Repository[] }) {
     }
 
 
-    function handleRepoClick(event: React.MouseEvent<HTMLDivElement>, item: Repository) {
-        const target = event.target as HTMLElement;
-        const starButton = target.closest(".star-btn");
-        if (!starButton) {
-            navigate(`repo/${item.owner.login}/${item.name}`);
-        }
+    function handleRepoClick(item: Repository) {
+        navigate(`repo/${item.owner.login}/${item.name}`);
     }
 
 
@@ -71,7 +67,7 @@ function SearchResults({ items }: { items: Repository[] }) {
         <div className="flex flex-col justify-start items-start">
             {items?.map((item: Repository) => {
                 return (
-                    <div key={item.id} className='w-full p-4 my-2 bg-gray-900 border border-gray-600 hover:border-blue-600 hover:cursor-pointer rounded-lg flex gap-4 relative' onClick={(event) => handleRepoClick(event, item)}>
+                    <div key={item.id} className='w-full p-4 my-2 bg-gray-900 border border-gray-600 hover:border-blue-600 hover:cursor-pointer rounded-lg flex gap-4 relative' onClick={() => handleRepoClick(item)}>
                         <div className="w-8 h-8 rounded-full border border-gray-600 overflow-hidden">
                             <img src={item.owner.avatar_url} alt="avatar" />
                         </div>
@@ -113,8 +109,11 @@ function SearchResults({ items }: { items: Repository[] }) {
                         </div>
 
                         <div
-                            className={`star-btn top-2 right-2 w-8 h-8 p-2 border rounded-sm cursor-pointer flex justify-center hover:border-yellow-500 hover:text-yellow-500 absolute ${data?.find(watchedItem => watchedItem.full_name === item.full_name) ? 'border-yellow-500 text-yellow-500' : 'border-gray-600 '}`}
-                            onClick={() => mutateAsync(item)}
+                            className={`top-2 right-2 w-8 h-8 p-2 border rounded-sm cursor-pointer flex justify-center hover:border-yellow-500 hover:text-yellow-500 absolute ${data?.find(watchedItem => watchedItem.full_name === item.full_name) ? 'border-yellow-500 text-yellow-500' : 'border-gray-600 '}`}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                mutateAsync(item);
+                            }}
                         >
                             <GoStar className={`w-3.5 h-3.5`} />
                         </div>
