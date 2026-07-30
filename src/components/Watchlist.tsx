@@ -1,33 +1,53 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { GoStar } from "react-icons/go";
 import type { Repository } from "../types";
+import RemoveWatchItems from "./RemoveWatchItems";
 
 function Watchlist() {
     const queryClient = useQueryClient();
 
     const [showCrossButton, setShowCrossButton] = useState(-1);
 
+
     const { isLoading, isError, data, error } = useQuery({
         queryKey: ['watchlist'],
         queryFn: fetchWatchList
     });
-
-    const { mutateAsync } = useMutation({
-        mutationFn: deleteWatchList,
-        onSuccess: () => queryClient.invalidateQueries({ queryKey: ['watchlist'] })
-    })
-
 
     async function fetchWatchList() {
         const { data } = await axios.get(`http://localhost:4000/watchlist`);
         return data;
     }
 
+
+    const { mutateAsync } = useMutation({
+        mutationFn: deleteWatchList,
+        onMutate: async (repoId) => {
+            await queryClient.cancelQueries({ queryKey: ['watchlist'] });
+            const previous: Repository[] = queryClient.getQueryData(['watchlist']);
+            queryClient.setQueryData(['watchlist'],
+                previous.filter(watchItem => watchItem.id !== repoId)
+            )
+            return { previous }
+        },
+        onError: (err, repoId, ctx) => queryClient.setQueryData(['watchlist'], ctx.previous),
+        onSettled: () => queryClient.invalidateQueries({ queryKey: ['watchlist'] })
+    })
+
     async function deleteWatchList(id: string) {
         const { data } = await axios.delete(`http://localhost:4000/watchlist/${id}`);
         return data;
+    }
+
+
+    function handleWatchItemClick(event: React.MouseEvent<HTMLDivElement>, url: string) {
+        const target = event.target as HTMLElement;
+        const crossBtn = target.closest('.cross-btn');
+        if (!crossBtn) {
+            window.open(url, '_blank', 'noopener,noreferrer');
+        }
     }
 
 
@@ -70,13 +90,14 @@ function Watchlist() {
                     {data.map((item: Repository, idx: number) => (
                         <div
                             key={idx}
-                            className={`p-2 px-4 flex flex-col ${idx === data.length - 1 ? '' : 'border-b border-gray-700'}`}
+                            className={`p-2 px-4 flex flex-col cursor-pointer ${idx === data.length - 1 ? '' : 'border-b border-gray-700'}`}
                             onMouseEnter={() => setShowCrossButton(idx)}
                             onMouseLeave={() => setShowCrossButton(-1)}
+                            onClick={(event) => handleWatchItemClick(event, item.html_url)}
                         >
                             <span className="flex justify-between text-blue-400 ">
                                 {item.name}
-                                {showCrossButton === idx && <button className="text-gray-600 cursor-pointer" onClick={() => mutateAsync(item.id)}>x</button>}
+                                {showCrossButton === idx && <button className="cross-btn text-gray-600 cursor-pointer" onClick={() => mutateAsync(item.id)}>x</button>}
                             </span>
                             <div className="flex gap-2 text-gray-600">
                                 <span className="flex gap-1 items-center">
@@ -89,7 +110,8 @@ function Watchlist() {
                                 </span>
 
                             </div>
-                            <input type="text" className="mt-4 p-2 rounded-lg" placeholder="add a note..." />
+                            <RemoveWatchItems item={item} />
+
                         </div>
                     ))}
                 </div>

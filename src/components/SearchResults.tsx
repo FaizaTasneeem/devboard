@@ -22,7 +22,23 @@ function SearchResults({ items }: { items: Repository[] }) {
 
     const { mutateAsync } = useMutation({
         mutationFn: addToWatchList,
-        onSuccess: () => queryClient.invalidateQueries({ queryKey: ['watchlist'] })
+        onMutate: async (repo) => {
+            await queryClient.cancelQueries({ queryKey: ['watchlist'] });
+
+            const previous: Repository[] = queryClient.getQueryData(['watchlist']);
+
+            const isWatched = previous.some((item) => item.full_name === repo.full_name);
+
+            queryClient.setQueryData(['watchlist'],
+                isWatched
+                    ? previous.filter((item) => item.full_name !== repo.full_name)
+                    : [...previous, repo]
+            )
+
+            return { previous };
+        },
+        onError: (err, repo, ctx) => queryClient.setQueryData(['watchlist'], ctx.previous),
+        onSettled: () => queryClient.invalidateQueries({ queryKey: ['watchlist'] })
     });
 
     async function addToWatchList(item: Repository) {
