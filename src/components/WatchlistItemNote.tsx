@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
-import axios from "axios";
+import { editWatchlist } from "../api/axios";
 
 function WatchlistItemNote({ item }) {
     const queryClient = useQueryClient();
@@ -10,11 +10,6 @@ function WatchlistItemNote({ item }) {
         mutationFn: editWatchlist,
         onSuccess: () => queryClient.invalidateQueries({ queryKey: ['watchlist'] })
     })
-
-    async function editWatchlist({ id, note }: { id: string, note: string }) {
-        const { data } = await axios.patch(`http://localhost:4000/watchlist/${id}`, { note });
-        return data;
-    }
 
     useEffect(() => {
         if (inputText !== (item.note || "")) {

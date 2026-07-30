@@ -1,24 +1,17 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { GoStar, GoRepoForked, GoIssueOpened } from "react-icons/go";
 import type { Repository } from "../types";
+import { fetchWatchList, addToWatchList } from "../api/axios";
 
 function SearchResults({ items }: { items: Repository[] }) {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
 
-
     const { data } = useQuery({
         queryKey: ['watchlist'],
         queryFn: fetchWatchList
     });
-
-    async function fetchWatchList() {
-        const { data } = await axios.get(`http://localhost:4000/watchlist`);
-        return data;
-    }
-
 
     const { mutateAsync } = useMutation({
         mutationFn: addToWatchList,
@@ -27,12 +20,12 @@ function SearchResults({ items }: { items: Repository[] }) {
 
             const previous: Repository[] = queryClient.getQueryData(['watchlist']);
 
-            const isWatched = previous.some((item) => item.full_name === repo.full_name);
+            const isWatched = previous.some((watchItem) => watchItem.full_name === repo.item.full_name);
 
             queryClient.setQueryData(['watchlist'],
                 isWatched
-                    ? previous.filter((item) => item.full_name !== repo.full_name)
-                    : [...previous, repo]
+                    ? previous.filter((item) => item.full_name !== repo.item.full_name)
+                    : [...previous, repo.item]
             )
 
             return { previous };
@@ -40,23 +33,6 @@ function SearchResults({ items }: { items: Repository[] }) {
         onError: (err, repo, ctx) => queryClient.setQueryData(['watchlist'], ctx.previous),
         onSettled: () => queryClient.invalidateQueries({ queryKey: ['watchlist'] })
     });
-
-    async function addToWatchList(item: Repository) {
-        const watchedRepo = data?.find((watchItem: Repository) => watchItem.full_name === item.full_name)
-        if (watchedRepo) {
-            await deleteFromWatchList(watchedRepo.id);
-            return;
-        }
-
-        const res = await axios.post(`http://localhost:4000/watchlist`, item);
-        return res;
-    }
-
-    async function deleteFromWatchList(id: string) {
-        const { data } = await axios.delete(`http://localhost:4000/watchlist/${id}`);
-        return data;
-    }
-
 
     function handleRepoClick(item: Repository) {
         navigate(`repo/${item.owner.login}/${item.name}`);
@@ -112,7 +88,7 @@ function SearchResults({ items }: { items: Repository[] }) {
                             className={`top-2 right-2 w-8 h-8 p-2 border rounded-sm cursor-pointer flex justify-center hover:border-yellow-500 hover:text-yellow-500 absolute ${data?.find(watchedItem => watchedItem.full_name === item.full_name) ? 'border-yellow-500 text-yellow-500' : 'border-gray-600 '}`}
                             onClick={(e) => {
                                 e.stopPropagation();
-                                mutateAsync(item);
+                                mutateAsync({ item, watchlist: data });
                             }}
                         >
                             <GoStar className={`w-3.5 h-3.5`} />

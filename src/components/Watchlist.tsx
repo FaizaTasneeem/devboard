@@ -1,29 +1,22 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
 import { GoStar } from "react-icons/go";
 import type { Repository } from "../types";
 import WatchlistItemNote from "./WatchlistItemNote";
+import { fetchWatchList, deleteFromWatchList } from "../api/axios";
 
 function Watchlist() {
     const queryClient = useQueryClient();
 
     const [showCrossButton, setShowCrossButton] = useState(-1);
 
-
     const { isLoading, isError, data, error } = useQuery({
         queryKey: ['watchlist'],
         queryFn: fetchWatchList
     });
 
-    async function fetchWatchList() {
-        const { data } = await axios.get(`http://localhost:4000/watchlist`);
-        return data;
-    }
-
-
     const { mutateAsync } = useMutation({
-        mutationFn: deleteWatchList,
+        mutationFn: deleteFromWatchList,
         onMutate: async (repoId) => {
             await queryClient.cancelQueries({ queryKey: ['watchlist'] });
             const previous: Repository[] = queryClient.getQueryData(['watchlist']);
@@ -35,12 +28,6 @@ function Watchlist() {
         onError: (err, repoId, ctx) => queryClient.setQueryData(['watchlist'], ctx.previous),
         onSettled: () => queryClient.invalidateQueries({ queryKey: ['watchlist'] })
     })
-
-    async function deleteWatchList(id: string) {
-        const { data } = await axios.delete(`http://localhost:4000/watchlist/${id}`);
-        return data;
-    }
-
 
     function handleWatchItemClick(url: string) {
         window.open(url, '_blank', 'noopener,noreferrer');
