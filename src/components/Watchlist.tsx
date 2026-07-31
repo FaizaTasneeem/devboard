@@ -72,7 +72,7 @@ function Watchlist() {
                 <div>
                     {data.map((item: Repository, idx: number) => (
                         <div
-                            key={idx}
+                            key={item.id}
                             className={`p-2 px-4 flex flex-col cursor-pointer ${idx === data.length - 1 ? '' : 'border-b border-gray-700'}`}
                             onMouseEnter={() => setShowCrossButton(idx)}
                             onMouseLeave={() => setShowCrossButton(-1)}

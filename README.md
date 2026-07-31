@@ -34,6 +34,10 @@ Built using **React 19**, **TypeScript**, and **TanStack Query v5**, this projec
 ### 📝 5. Persistent Repository Annotations (CRUD REST API)
 - Integrated Axios with local REST endpoints (`http://localhost:4000/watchlist`) allowing developers to pin favorite repositories and attach auto-saving personal notes.
 
+### ⏱️ 6. Cache Tuning (`staleTime` vs `gcTime`)
+- **Configured `staleTime` (60s)**: Configured `staleTime: 1000 * 60` (60 seconds) in `QueryClient` defaults.
+- **Why Tune `staleTime`**: By default, TanStack Query sets `staleTime: 0`, marking data as stale immediately upon fetch. This causes background refetches every time the user refocuses the browser window or navigates between tabs. Setting `staleTime` to 60s keeps fetched GitHub repository data fresh for 1 minute, preventing unnecessary GitHub REST API calls and protecting against rate limits.
+
 ---
 
 ## 🛠️ Technology Stack & Engineering Tools
