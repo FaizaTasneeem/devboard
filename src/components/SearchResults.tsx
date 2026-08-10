@@ -18,19 +18,19 @@ function SearchResults({ items }: { items: Repository[] }) {
         onMutate: async (repo) => {
             await queryClient.cancelQueries({ queryKey: ['watchlist'] });
 
-            const previous: Repository[] = queryClient.getQueryData(['watchlist']);
+            const previous: Repository[] | undefined = queryClient.getQueryData(['watchlist']);
 
-            const isWatched = previous.some((watchItem) => watchItem.full_name === repo.item.full_name);
+            const isWatched = previous?.some((watchItem) => watchItem.full_name === repo.item.full_name);
 
             queryClient.setQueryData(['watchlist'],
                 isWatched
-                    ? previous.filter((item) => item.full_name !== repo.item.full_name)
-                    : [...previous, repo.item]
+                    ? previous?.filter((item) => item.full_name !== repo.item.full_name)
+                    : previous && [...previous, repo.item]
             )
 
             return { previous };
         },
-        onError: (err, repo, ctx) => queryClient.setQueryData(['watchlist'], ctx.previous),
+        onError: (err, repo, ctx) => queryClient.setQueryData(['watchlist'], ctx?.previous),
         onSettled: () => queryClient.invalidateQueries({ queryKey: ['watchlist'] })
     });
 
@@ -85,7 +85,7 @@ function SearchResults({ items }: { items: Repository[] }) {
                         </div>
 
                         <div
-                            className={`top-2 right-2 w-8 h-8 p-2 border rounded-sm cursor-pointer flex justify-center hover:border-yellow-500 hover:text-yellow-500 absolute ${data?.find(watchedItem => watchedItem.full_name === item.full_name) ? 'border-yellow-500 text-yellow-500' : 'border-gray-600 '}`}
+                            className={`top-2 right-2 w-8 h-8 p-2 border rounded-sm cursor-pointer flex justify-center hover:border-yellow-500 hover:text-yellow-500 absolute ${data?.find((watchedItem: Repository) => watchedItem.full_name === item.full_name) ? 'border-yellow-500 text-yellow-500' : 'border-gray-600 '}`}
                             onClick={(e) => {
                                 e.stopPropagation();
                                 mutateAsync({ item, watchlist: data });

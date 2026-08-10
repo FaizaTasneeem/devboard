@@ -19,13 +19,13 @@ function Watchlist() {
         mutationFn: deleteFromWatchList,
         onMutate: async (repoId) => {
             await queryClient.cancelQueries({ queryKey: ['watchlist'] });
-            const previous: Repository[] = queryClient.getQueryData(['watchlist']);
+            const previous: Repository[] | undefined = queryClient.getQueryData(['watchlist']);
             queryClient.setQueryData(['watchlist'],
-                previous.filter(watchItem => watchItem.id !== repoId)
+                previous?.filter(watchItem => watchItem.id !== repoId)
             )
             return { previous }
         },
-        onError: (err, repoId, ctx) => queryClient.setQueryData(['watchlist'], ctx.previous),
+        onError: (err, repoId, ctx) => queryClient.setQueryData(['watchlist'], ctx?.previous),
         onSettled: () => queryClient.invalidateQueries({ queryKey: ['watchlist'] })
     })
 
