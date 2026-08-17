@@ -1,38 +1,14 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { GoStar, GoRepoForked, GoIssueOpened } from "react-icons/go";
 import type { Repository } from "../types";
-import { fetchWatchList, addToWatchList } from "../api/axios";
+import { useAddToWatchlist, useGetWatchlist } from "../hooks/useWatchlistQueries";
 
 function SearchResults({ items }: { items: Repository[] }) {
     const navigate = useNavigate();
-    const queryClient = useQueryClient();
 
-    const { data } = useQuery({
-        queryKey: ['watchlist'],
-        queryFn: fetchWatchList
-    });
+    const { data } = useGetWatchlist();
 
-    const { mutateAsync } = useMutation({
-        mutationFn: addToWatchList,
-        onMutate: async (repo) => {
-            await queryClient.cancelQueries({ queryKey: ['watchlist'] });
-
-            const previous: Repository[] | undefined = queryClient.getQueryData(['watchlist']);
-
-            const isWatched = previous?.some((watchItem) => watchItem.full_name === repo.item.full_name);
-
-            queryClient.setQueryData(['watchlist'],
-                isWatched
-                    ? previous?.filter((item) => item.full_name !== repo.item.full_name)
-                    : previous && [...previous, repo.item]
-            )
-
-            return { previous };
-        },
-        onError: (err, repo, ctx) => queryClient.setQueryData(['watchlist'], ctx?.previous),
-        onSettled: () => queryClient.invalidateQueries({ queryKey: ['watchlist'] })
-    });
+    const { mutateAsync } = useAddToWatchlist();
 
     function handleRepoClick(item: Repository) {
         navigate(`repo/${item.owner.login}/${item.name}`);

@@ -1,52 +1,23 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { useInfiniteQuery } from '@tanstack/react-query';
 import { useInView } from 'react-intersection-observer';
-import axios from 'axios';
 import Logo from './Logo';
 import RepoSearchPlaceholder from './RepoSearchPlaceholder';
 import NoResultsFound from './NoResultsFound';
 import SearchResults from './SearchResults';
 import Watchlist from './Watchlist';
+import { useGetRepos } from '../hooks/useRepoQueries';
 
-const token = import.meta.env.VITE_GITHUB_TOKEN;
 
 function Dashboard() {
-    const repos_per_page = 20;
-
     const [searchParams, setSearchParams] = useSearchParams();
     const query = searchParams.get("q") || "";
 
     const [inputVal, setInputVal] = useState(query);
     const [prevQuery, setPrevQuery] = useState(query);
 
-    const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isError, error } = useInfiniteQuery({
-        queryKey: ["repo", query],
-        queryFn: fetchRepos,
-        initialPageParam: 1,
-        getNextPageParam: (lastPage) => lastPage.nextPageParam,
-        enabled: query.length > 0
-    });
-
+    const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isError, error } = useGetRepos(query);
     const { ref, inView } = useInView();
-
-    async function fetchRepos({ pageParam }: { pageParam: number }) {
-        const { data } = await axios.get(
-            `https://api.github.com/search/repositories?q=${query}&sort=stars&page=${pageParam}&per_page=${repos_per_page}`,
-            {
-                headers: {
-                    'authorization': `Bearer ${token}`
-                }
-            }
-        );
-
-        return {
-            total_count: data.total_count,
-            items: data.items,
-            nextPageParam: data?.items.length < repos_per_page ? undefined : pageParam + 1
-        };
-    }
-
 
     if (query !== prevQuery) {
         setPrevQuery(query);

@@ -1,43 +1,17 @@
 import { useState, useEffect } from "react";
-import { useInfiniteQuery } from "@tanstack/react-query";
 import { useInView } from "react-intersection-observer";
-import axios from "axios";
 import { IoAlertCircleOutline } from "react-icons/io5";
 import { GoComment, GoLinkExternal } from "react-icons/go";
 import type { Issue } from "../types";
+import { useGetIssues } from "../hooks/useIssueQueries";
 
-const token = import.meta.env.VITE_GITHUB_TOKEN;
 
 function OpenIssues({ owner, name }: { owner: string, name: string }) {
     const [showIssueHoverEffect, setShowIssueHoverEffect] = useState(-1);
 
-    const issues_per_page = 20;
-
-    const { data, fetchNextPage, isFetchingNextPage, hasNextPage } = useInfiniteQuery({
-        queryKey: ['issues', owner, name],
-        queryFn: fetchIssues,
-        initialPageParam: 1,
-        getNextPageParam: (lastPage) => lastPage.nextPageParam
-    });
+    const { data, fetchNextPage, isFetchingNextPage, hasNextPage } = useGetIssues(owner, name);
 
     const { ref, inView } = useInView();
-
-    async function fetchIssues({ pageParam }: { pageParam: number }) {
-        const { data } = await axios.get(
-            `https://api.github.com/repos/${owner}/${name}/issues?page=${pageParam}&per_page=${issues_per_page}`,
-            {
-                headers: {
-                    'authorization': `Bearer ${token}`
-                }
-            }
-        );
-
-        return {
-            data: data,
-            nextPageParam: data.length < issues_per_page ? undefined : pageParam + 1
-        }
-
-    }
 
     function handleIssueClick(url: string) {
         window.open(url, '_blank', 'noopener,noreferrer');

@@ -1,16 +1,11 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
-import { editWatchlist } from "../api/axios";
 import type { Repository } from "../types";
+import { useEditWatchlist } from "../hooks/useWatchlistQueries";
 
 function WatchlistItemNote({ item }: { item: Repository }) {
-    const queryClient = useQueryClient();
     const [inputText, setInputText] = useState(item.note || "");
 
-    const { mutateAsync } = useMutation({
-        mutationFn: editWatchlist,
-        onSuccess: () => queryClient.invalidateQueries({ queryKey: ['watchlist'] })
-    })
+    const { mutateAsync } = useEditWatchlist();
 
     useEffect(() => {
         if (inputText !== (item.note || "")) {

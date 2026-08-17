@@ -1,33 +1,15 @@
 import { useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import { GoTag, GoRepoForked, GoEye, GoStar, GoLinkExternal } from "react-icons/go";
 import { IoAlertCircleOutline } from "react-icons/io5";
-import type { Repository } from "../types";
 import Logo from "./Logo";
 import OpenIssues from "./OpenIssues";
+import { useGetRepoDetails } from "../hooks/useRepoQueries";
 
-const token = import.meta.env.VITE_GITHUB_TOKEN;
 
 function RepoDetails() {
     const { owner = "", name = "" } = useParams<{ owner: string, name: string }>();
 
-    const { isLoading, isError, data, error } = useQuery<Repository>({
-        queryKey: ['repo', owner, name],
-        queryFn: () => searchRepoDetails(owner, name),
-    })
-
-    async function searchRepoDetails(owner: string, name: string) {
-        const { data } = await axios.get(
-            `https://api.github.com/repos/${owner}/${name}`,
-            {
-                headers: {
-                    authorization: `Bearer ${token}`
-                }
-            }
-        );
-        return data;
-    }
+    const { isLoading, isError, data, error } = useGetRepoDetails(owner, name);
 
     function handleGitHubClick(url: string) {
         window.open(url, '_blank', 'noopener,noreferrer');
@@ -107,7 +89,7 @@ function RepoDetails() {
                     </div>
 
                     <div className="mt-2 flex flex-row flex-wrap gap-2 text-blue-400 text-xs font-mono font-normal">
-                        {data.topics.map((topic) => {
+                        {data.topics.map((topic: string) => {
                             return (
                                 <div key={topic} className="bg-blue-950 rounded-xl border border-blue-900 px-2 py-1">
                                     {topic}
