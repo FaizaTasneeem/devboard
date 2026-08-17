@@ -1,8 +1,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import { editWatchlist } from "../api/axios";
+import type { Repository } from "../types";
 
-function WatchlistItemNote({ item }) {
+function WatchlistItemNote({ item }: { item: Repository }) {
     const queryClient = useQueryClient();
     const [inputText, setInputText] = useState(item.note || "");
 

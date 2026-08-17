@@ -70,9 +70,9 @@ function RepoDetails() {
                                 <span>Watch</span>
                             </button>
 
-                            <button className="p-2 py-1 font-medium border border-gray-500 text-gray-500 rounded-lg cursor-pointer flex items-center justify-center gap-2">
+                            <button className="p-2 py-1 font-medium border border-gray-500 text-gray-500 rounded-lg cursor-pointer flex items-center justify-center gap-2" onClick={() => handleGitHubClick(data.html_url)}>
                                 <GoLinkExternal className="w-3.5 h-3.5" />
-                                <span onClick={() => handleGitHubClick(data.html_url)}>GitHub</span>
+                                <span>GitHub</span>
                             </button>
                         </div>
                     </div>
@@ -107,9 +107,9 @@ function RepoDetails() {
                     </div>
 
                     <div className="mt-2 flex flex-row flex-wrap gap-2 text-blue-400 text-xs font-mono font-normal">
-                        {data.topics.map((topic, id) => {
+                        {data.topics.map((topic) => {
                             return (
-                                <div key={id} className="bg-blue-950 rounded-xl border border-blue-900 px-2 py-1">
+                                <div key={topic} className="bg-blue-950 rounded-xl border border-blue-900 px-2 py-1">
                                     {topic}
                                 </div>
                             )

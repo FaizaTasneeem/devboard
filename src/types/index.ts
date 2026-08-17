@@ -17,7 +17,8 @@ export type Repository = {
     license: {
         spdx_id: string
     } | null,
-    html_url: string
+    html_url: string,
+    note: string
 }
 
 

@@ -73,9 +73,9 @@ function SearchResults({ items }: { items: Repository[] }) {
                             </div>
 
                             <div className="mt-2 flex flex-row flex-wrap gap-2 text-blue-400 text-xs font-mono font-normal">
-                                {item.topics?.slice(0, 5).map((topic, id) => {
+                                {item.topics?.slice(0, 5).map((topic) => {
                                     return (
-                                        <div key={id} className="bg-blue-950 rounded-lg border border-blue-900 p-1">
+                                        <div key={topic} className="bg-blue-950 rounded-lg border border-blue-900 p-1">
                                             {topic}
                                         </div>
                                     )
