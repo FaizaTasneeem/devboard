@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { fetchWatchList, addToWatchList, editWatchlist, deleteFromWatchList } from "../api/axios";
+import { fetchWatchList, addToWatchList, editWatchlist, deleteFromWatchList } from "../services/watchlistApi";
 import type { Repository } from "../types";
 
 

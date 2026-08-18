@@ -1,5 +1,5 @@
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
-import { fetchRepos, searchRepoDetails } from '../api/axios';
+import { fetchRepos, searchRepoDetails } from '../services/githubApi';
 
 export const useGetRepos = (query: string) => {
     return useInfiniteQuery({

@@ -1,5 +1,5 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { fetchIssues } from "../api/axios";
+import { fetchIssues } from "../services/githubApi";
 
 export const useGetIssues = (owner: string, name: string) => {
     return useInfiniteQuery({
