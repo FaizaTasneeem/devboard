@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { GoStar } from "react-icons/go";
-import type { Repository } from "../types";
+import type { WatchlistType } from "../types";
 import WatchlistItemNote from "./WatchlistItemNote";
 import { useDeleteFromWatchList, useGetWatchlist } from "../hooks/useWatchlistQueries";
 
@@ -52,13 +52,13 @@ function Watchlist() {
 
             {data && data.length !== 0 &&
                 <div>
-                    {data.map((item: Repository, idx: number) => (
+                    {data.map((item: WatchlistType, idx: number) => (
                         <div
                             key={item.id}
                             className={`p-2 px-4 flex flex-col cursor-pointer ${idx === data.length - 1 ? '' : 'border-b border-gray-700'}`}
                             onMouseEnter={() => setShowCrossButton(idx)}
                             onMouseLeave={() => setShowCrossButton(-1)}
-                            onClick={() => handleWatchItemClick(item.html_url)}
+                            onClick={() => handleWatchItemClick(item.htmlUrl)}
                         >
                             <span className="flex justify-between text-blue-400 ">
                                 {item.name}
@@ -79,7 +79,7 @@ function Watchlist() {
                                 </span>
                                 <span className="flex gap-1 items-center">
                                     <GoStar className="w-2.5 h-2.5" />
-                                    {item.stargazers_count.toLocaleString()}
+                                    {item.stargazersCount.toLocaleString()}
                                 </span>
 
                             </div>

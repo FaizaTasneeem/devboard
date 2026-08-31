@@ -1,4 +1,4 @@
-import { pgTable, text, integer, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, text, integer } from "drizzle-orm/pg-core";
 
 export const watchlist = pgTable("watchlist", {
     id: text("id").primaryKey(),
@@ -16,5 +16,4 @@ export const watchlist = pgTable("watchlist", {
     ownerAvatarUrl: text("owner_avatar_url").notNull(),
     licenseSpdxId: text("license_spdx_id"),
     note: text("note").default(""),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
 });

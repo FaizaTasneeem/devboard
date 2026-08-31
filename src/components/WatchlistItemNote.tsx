@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import type { Repository } from "../types";
+import type { WatchlistType } from "../types";
 import { useEditWatchlist } from "../hooks/useWatchlistQueries";
 
-function WatchlistItemNote({ item }: { item: Repository }) {
+function WatchlistItemNote({ item }: { item: WatchlistType }) {
     const [inputText, setInputText] = useState(item.note || "");
 
     const { mutateAsync } = useEditWatchlist();

@@ -38,3 +38,22 @@ export type Issue = {
     comments: number,
     html_url: string
 }
+
+
+export type WatchlistType = {
+    id: string,
+    githubId: number,
+    name: string,
+    fullName: string,
+    htmlUrl: string,
+    ownerLogin: string,
+    ownerAvatarUrl: string,
+    stargazersCount: number,
+    forksCount: number,
+    watchersCount: number,
+    openIssuesCount: number,
+    language: string,
+    description: string,
+    licenseSpdxId: string,
+    note: string
+}

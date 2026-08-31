@@ -16,7 +16,9 @@ export async function addToWatchList({ item, watchlist }: { item: Repository, wa
         return;
     }
 
-    const { data } = await axios.post(`${server}/watchlist/create`, item);
+    const formatted = getFormattedData(item);
+
+    const { data } = await axios.post(`${server}/watchlist/create`, formatted);
     return data;
 };
 
@@ -30,3 +32,24 @@ export async function deleteFromWatchList(id: string) {
     const { data } = await axios.delete(`${server}/watchlist/delete/${id}`);
     return data;
 };
+
+
+export function getFormattedData(item: Repository) {
+    return {
+        id: String(item.id),
+        githubId: Number(item.id),
+        name: item.name,
+        fullName: item.full_name,
+        htmlUrl: item.html_url,
+        ownerLogin: item.owner.login,
+        ownerAvatarUrl: item.owner.avatar_url,
+        stargazersCount: item.stargazers_count,
+        forksCount: item.forks_count,
+        watchersCount: item.watchers_count,
+        openIssuesCount: item.open_issues_count,
+        language: item.language ?? "",
+        description: item.description ?? "",
+        licenseSpdxId: item.license?.spdx_id ?? "",
+        note: item.note ?? ""
+    };
+}

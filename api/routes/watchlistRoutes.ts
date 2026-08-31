@@ -1,55 +1,29 @@
 import express from "express";
-import axios from "axios";
-import { env } from "../config/env"
+import { db } from "../../src/db";
+import { watchlist } from "../../src/db/schema";
+import { eq } from "drizzle-orm";
 
 const router = express.Router();
 
 router.get('/getList', async (req, res) => {
-    const { data } = await axios.get(
-        `https://api.github.com/search/repositories?q=${req.query.query}&sort=stars&page=${req.query.pageParam}&per_page=${req.query.repos_per_page}`,
-        {
-            headers: {
-                'authorization': `Bearer ${env.github_token}`
-            }
-        }
-    );
+    const data = await db.select().from(watchlist);
     res.json(data);
 });
 
 router.post('/create', async (req, res) => {
-    const { data } = await axios.get(
-        `https://api.github.com/search/repositories?q=${req.query.query}&sort=stars&page=${req.query.pageParam}&per_page=${req.query.repos_per_page}`,
-        {
-            headers: {
-                'authorization': `Bearer ${env.github_token}`
-            }
-        }
-    );
-    res.json(data);
+    console.log(req.body);
+    await db.insert(watchlist).values(req.body);
+    res.status(200).json({ success: true })
 });
 
 router.patch('/update/:id', async (req, res) => {
-    const { data } = await axios.get(
-        `https://api.github.com/search/repositories?q=${req.query.query}&sort=stars&page=${req.query.pageParam}&per_page=${req.query.repos_per_page}`,
-        {
-            headers: {
-                'authorization': `Bearer ${env.github_token}`
-            }
-        }
-    );
-    res.json(data);
+    await db.update(watchlist).set(req.body).where(eq(watchlist.id, req.params.id));
+    res.status(200).json({ success: true })
 });
 
 router.delete('/delete/:id', async (req, res) => {
-    const { data } = await axios.get(
-        `https://api.github.com/search/repositories?q=${req.query.query}&sort=stars&page=${req.query.pageParam}&per_page=${req.query.repos_per_page}`,
-        {
-            headers: {
-                'authorization': `Bearer ${env.github_token}`
-            }
-        }
-    );
-    res.json(data);
+    await db.delete(watchlist).where(eq(watchlist.id, req.params.id));
+    res.status(200).json({ success: true })
 });
 
 export default router;

@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { fetchWatchList, addToWatchList, editWatchlist, deleteFromWatchList } from "../services/watchlistApi";
-import type { Repository } from "../types";
+import { fetchWatchList, addToWatchList, editWatchlist, deleteFromWatchList, getFormattedData } from "../services/watchlistApi";
+import type { WatchlistType } from "../types";
 
 
 export const useGetWatchlist = () => {
@@ -18,14 +18,14 @@ export const useAddToWatchlist = () => {
         onMutate: async (repo) => {
             await queryClient.cancelQueries({ queryKey: ['watchlist'] });
 
-            const previous: Repository[] | undefined = queryClient.getQueryData(['watchlist']);
+            const previous: WatchlistType[] | undefined = queryClient.getQueryData(['watchlist']);
 
-            const isWatched = previous?.some((watchItem) => watchItem.full_name === repo.item.full_name);
+            const isWatched = previous?.some((watchItem) => watchItem.fullName === repo.item.full_name);
 
             queryClient.setQueryData(['watchlist'],
                 isWatched
-                    ? previous?.filter((item) => item.full_name !== repo.item.full_name)
-                    : previous && [...previous, repo.item]
+                    ? previous?.filter((item) => item.fullName !== repo.item.full_name)
+                    : previous && [...previous, getFormattedData(repo.item)]
             )
 
             return { previous };
@@ -52,7 +52,7 @@ export const useDeleteFromWatchList = () => {
         mutationFn: deleteFromWatchList,
         onMutate: async (repoId) => {
             await queryClient.cancelQueries({ queryKey: ['watchlist'] });
-            const previous: Repository[] | undefined = queryClient.getQueryData(['watchlist']);
+            const previous: WatchlistType[] | undefined = queryClient.getQueryData(['watchlist']);
             queryClient.setQueryData(['watchlist'],
                 previous?.filter(watchItem => watchItem.id !== repoId)
             )
