@@ -1,6 +1,6 @@
 import express, { type Request, type Response } from "express";
-import { db } from "../../src/db/index.ts";
-import { watchlist } from "../../src/db/schema.ts";
+import { db } from "../../src/db/index.js";
+import { watchlist } from "../../src/db/schema.js";
 import { eq } from "drizzle-orm";
 
 const router = express.Router();

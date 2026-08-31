@@ -1,5 +1,5 @@
-import app from "./index.ts";
-import { env } from "./config/env.ts";
+import app from "./index.js";
+import { env } from "./config/env.js";
 
 app.listen(env.port, () => {
     try {

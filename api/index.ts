@@ -1,8 +1,8 @@
 import express, { type Request, type Response } from "express";
 import cors from "cors";
 import axios from "axios";
-import { env } from "./config/env.ts";
-import watchlistRoutes from "./routes/watchlistRoutes.ts";
+import { env } from "./config/env.js";
+import watchlistRoutes from "./routes/watchlistRoutes.js";
 
 const app = express();
 
