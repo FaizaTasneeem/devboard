@@ -2,9 +2,11 @@ import express from "express";
 import cors from "cors";
 import axios from "axios";
 import { env } from "./config/env"
+import watchlistRoutes from "./routes/watchlistRoutes";
 
 const app = express();
 
+app.use(express.json());
 app.use(
     cors({
         origin: env.frontendOrigin,
@@ -12,6 +14,7 @@ app.use(
     })
 );
 
+app.use('/api/watchlist', watchlistRoutes);
 
 app.get('/api/repos', async (req, res) => {
     const { data } = await axios.get(
@@ -49,13 +52,4 @@ app.get('/api/issues', async (req, res) => {
     res.json(data);
 });
 
-
-app.listen(env.port, () => {
-    try {
-        console.log(`Server started at port ${env.port}...`);
-    }
-    catch (error) {
-        console.error(`Failed to start server at port ${env.port}:`, error);
-        process.exit(1);
-    }
-})
+export default app;
