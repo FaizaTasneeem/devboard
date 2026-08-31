@@ -16,4 +16,4 @@ if (process.env.NODE_ENV !== "production") {
     globalThis.pgPool = pool;
 }
 
-export const db = drizzle(pool, { schema });
+export const db = drizzle(pool, { schema, logger: true });
