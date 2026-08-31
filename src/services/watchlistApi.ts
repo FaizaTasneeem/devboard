@@ -1,5 +1,5 @@
 import axios from "axios";
-import type { Repository } from "../types";
+import type { Repository, WatchlistType } from "../types";
 
 const server = import.meta.env.VITE_BACKEND_SERVER_LESSON || 'http://localhost:5000/api';
 
@@ -9,14 +9,14 @@ export async function fetchWatchList() {
     return data;
 };
 
-export async function addToWatchList({ item, watchlist }: { item: Repository, watchlist: Repository[] }) {
-    const watchedRepo = watchlist?.find((watchItem: Repository) => watchItem.full_name === item.full_name)
+export async function addToWatchList({ item, watchlist }: { item: Repository, watchlist: WatchlistType[] }) {
+    const formatted = getFormattedData(item);
+
+    const watchedRepo = watchlist?.find((watchItem: WatchlistType) => watchItem.fullName === formatted.fullName)
     if (watchedRepo) {
         await deleteFromWatchList(watchedRepo.id);
         return;
     }
-
-    const formatted = getFormattedData(item);
 
     const { data } = await axios.post(`${server}/watchlist/create`, formatted);
     return data;

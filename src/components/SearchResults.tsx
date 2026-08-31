@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { GoStar, GoRepoForked, GoIssueOpened } from "react-icons/go";
-import type { Repository } from "../types";
+import type { Repository, WatchlistType } from "../types";
 import { useAddToWatchlist, useGetWatchlist } from "../hooks/useWatchlistQueries";
 
 function SearchResults({ items }: { items: Repository[] }) {
@@ -61,7 +61,7 @@ function SearchResults({ items }: { items: Repository[] }) {
                         </div>
 
                         <div
-                            className={`top-2 right-2 w-8 h-8 p-2 border rounded-sm cursor-pointer flex justify-center hover:border-yellow-500 hover:text-yellow-500 absolute ${data?.find((watchedItem: Repository) => watchedItem.full_name === item.full_name) ? 'border-yellow-500 text-yellow-500' : 'border-gray-600 '}`}
+                            className={`top-2 right-2 w-8 h-8 p-2 border rounded-sm cursor-pointer flex justify-center hover:border-yellow-500 hover:text-yellow-500 absolute ${data?.find((watchedItem: WatchlistType) => watchedItem.fullName === item.full_name) ? 'border-yellow-500 text-yellow-500' : 'border-gray-600 '}`}
                             onClick={(e) => {
                                 e.stopPropagation();
                                 mutateAsync({ item, watchlist: data });
