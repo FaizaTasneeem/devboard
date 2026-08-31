@@ -1,7 +1,7 @@
 import axios from "axios";
 import type { Repository, WatchlistType } from "../types";
 
-const server = import.meta.env.VITE_BACKEND_SERVER_LESSON || 'http://localhost:5000/api';
+const server = import.meta.env.VITE_BACKEND_SERVER || 'http://localhost:5000/api';
 
 
 export async function fetchWatchList() {

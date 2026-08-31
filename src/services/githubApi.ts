@@ -2,7 +2,7 @@ import axios from "axios";
 
 const repos_per_page = 20;
 const issues_per_page = 20;
-const server = import.meta.env.VITE_BACKEND_SERVER_LESSON || 'http://localhost:5000/api';
+const server = import.meta.env.VITE_BACKEND_SERVER || 'http://localhost:5000/api';
 
 
 export async function fetchRepos(query: string, pageParam: number) {
