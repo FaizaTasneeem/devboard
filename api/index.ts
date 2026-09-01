@@ -1,4 +1,4 @@
-import express, { type Request, type Response } from "express";
+import express from "express";
 import cors from "cors";
 import axios from "axios";
 import { env } from "./config/env.js";
@@ -16,7 +16,7 @@ app.use(
 
 app.use('/api/watchlist', watchlistRoutes);
 
-app.get('/api/repos', async (req: Request, res: Response) => {
+app.get('/api/repos', async (req, res) => {
     const { data } = await axios.get(
         `https://api.github.com/search/repositories?q=${req.query.query}&sort=stars&page=${req.query.pageParam}&per_page=${req.query.repos_per_page}`,
         {
@@ -28,7 +28,7 @@ app.get('/api/repos', async (req: Request, res: Response) => {
     res.json(data);
 });
 
-app.get('/api/repoDetails', async (req: Request, res: Response) => {
+app.get('/api/repoDetails', async (req, res) => {
     const { data } = await axios.get(
         `https://api.github.com/repos/${req.query.owner}/${req.query.name}`,
         {
@@ -40,7 +40,7 @@ app.get('/api/repoDetails', async (req: Request, res: Response) => {
     res.json(data);
 });
 
-app.get('/api/issues', async (req: Request, res: Response) => {
+app.get('/api/issues', async (req, res) => {
     const { data } = await axios.get(
         `https://api.github.com/repos/${req.query.owner}/${req.query.name}/issues?page=${req.query.pageParam}&per_page=${req.query.issues_per_page}`,
         {
