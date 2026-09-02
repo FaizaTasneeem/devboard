@@ -1,55 +1,63 @@
-# 🚀 DevBoard — Developer Repository & Issue Intelligence Dashboard
+# DevBoard - Developer Dashboard & GitHub Analytics
 
-[![React](https://img.shields.io/badge/React-19.2-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-6.0-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![React](https://img.shields.io/badge/React-v19-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-v6-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![TanStack Query](https://img.shields.io/badge/TanStack_Query-v5-FF4154?style=for-the-badge&logo=reactquery&logoColor=white)](https://tanstack.com/query/latest)
-[![Vite](https://img.shields.io/badge/Vite-8.1-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
+[![Express.js](https://img.shields.io/badge/Express.js-v5-000000?style=for-the-badge&logo=express&logoColor=white)](https://expressjs.com/)
+[![Drizzle ORM](https://img.shields.io/badge/Drizzle_ORM-v0.45-C5F74F?style=for-the-badge&logo=drizzle&logoColor=black)](https://orm.drizzle.team/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-v16-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 [![React Router](https://img.shields.io/badge/React_Router-v7-CA4245?style=for-the-badge&logo=reactrouter&logoColor=white)](https://reactrouter.com/)
+[![Vite](https://img.shields.io/badge/Vite-v8-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
 
-**DevBoard** is a sleek, high-performance developer dashboard engineered for discovering GitHub repositories, inspecting live repository analytics, exploring open issues, and maintaining a custom annotated Watchlist. 
+**DevBoard** is a sleek, high-performance developer dashboard engineered for discovering GitHub repositories, inspecting live repository analytics, exploring open issues, and maintaining a custom annotated Watchlist.
 
-Built using **React 19**, **TypeScript**, and **TanStack Query v5**, this project showcases production-grade frontend architecture, real-time query caching, optimistic UI updates, debounced URL search state synchronization, and infinite scrolling.
+Built using **React 19**, **TypeScript**, **Express.js**, **Drizzle ORM + PostgreSQL**, and **TanStack Query v5**, this project showcases production-grade full-stack architecture, real-time query caching, optimistic UI updates, debounced URL search state synchronization, secure server-side API proxying, and relational database persistence.
 
 ---
 
-## 🌟 Key Technical Highlights & Architecture
+## 🛠️ Key Technical Highlights & Architecture
 
-### ⚡ 1. Advanced Async State & Cache Management (`TanStack Query v5`)
-- **Infinite Query Pagination**: Implemented `useInfiniteQuery` in both repository search and issue tracking pages to deliver seamless continuous data fetching (`fetchNextPage`).
-- **Automatic Cache Invalidation & Refetching**: Integrated Query Keys (`['repo', query]`, `['watchlist']`, `['issues', owner, name]`) to minimize redundant network calls while guaranteeing data freshment.
+### 1. Server-Side GitHub API Proxy & Express REST Backend
+- **Secure Token Proxying**: Integrated a **Node.js Express backend API** (`api/index.ts`) that proxies GitHub API requests (`/api/repos`, `/api/repoDetails`, `/api/issues`), securing sensitive `GITHUB_TOKEN` credentials server-side and bypassing browser CORS/rate-limiting issues.
+- **RESTful Watchlist Endpoints**: Modular Express router (`api/routes/watchlistRoutes.ts`) handling CRUD interactions (`/api/watchlist/getList`, `/create`, `/update/:id`, `/delete/:id`).
+
+### 2. Relational Database Persistence (`Drizzle ORM` + `PostgreSQL`)
+- **Type-Safe Data Layer**: Configured **Drizzle ORM** with **PostgreSQL** schema definitions (`src/db/schema.ts`), replacing mock file-system storage with production-grade relational persistence for pinned watchlist repositories and personal notes.
+- **Global Connection Pooling**: Configured server connection pooling (`src/db/index.ts`) with global pool caching for seamless scalability and hot-reloading support.
+
+### 3. Advanced Async State & Cache Management (`TanStack Query v5`)
+- **Infinite Query Pagination**: Implemented `useInfiniteQuery` in both repository search and issue tracking views to deliver seamless continuous data fetching (`fetchNextPage`).
+- **Automatic Cache Invalidation & Refetching**: Integrated Query Keys (`['repo', query]`, `['watchlist']`, `['issues', owner, name]`) to minimize redundant network calls while guaranteeing data freshness.
 - **DevTools Integration**: Configured `@tanstack/react-query-devtools` for inspecting cache states during development.
 
-### 🔄 2. Optimistic UI Updates with Failure Rollback
-- **Zero-Latency Interactions**: Watchlist additions and deletions trigger immediate UI updates *before* server confirmation.
+### 4. Optimistic UI Updates with Failure Rollback
+- **Zero-Latency Interactions**: Watchlist additions, deletions, and note edits trigger immediate UI updates *before* server confirmation.
 - **Resilient Mutation Lifecycles**: Leveraged `onMutate`, `onError`, `onSettled`, and `cancelQueries` to snapshot previous query state and perform automatic rollback on backend mutation failures.
 
-### 🔍 3. Debounced Search & URL Synchronization
-- **Rate Limit Protection**: Built custom 500ms client-side debouncing (`useEffect` timer cleanup) on search inputs to eliminate unnecessary GitHub API calls.
+### 5. Debounced Search & URL Synchronization
+- **Rate Limit Protection**: Built custom 500ms client-side debouncing (`useEffect` timer cleanup) on search inputs to eliminate unnecessary API calls.
 - **Shareable State**: Query params seamlessly sync with browser history via `useSearchParams` from React Router v7, allowing deep-linking and state restoration upon refresh.
 
-### 📜 4. Infinite Scrolling with Intersection Observer
-- Seamlessly attached `react-intersection-observer` (`useInView`) to dynamically trigger `fetchNextPage()` whenever the viewport reaches the bottom sentinel node.
-
-### 📝 5. Persistent Repository Annotations (CRUD REST API)
-- Integrated Axios with local REST endpoints (`http://localhost:4000/watchlist`) allowing developers to pin favorite repositories and attach auto-saving personal notes.
-
-### ⏱️ 6. Cache Tuning (`staleTime` vs `gcTime`)
-- **Configured `staleTime` (60s)**: Configured `staleTime: 1000 * 60` (60 seconds) in `QueryClient` defaults.
-- **Why Tune `staleTime`**: By default, TanStack Query sets `staleTime: 0`, marking data as stale immediately upon fetch. This causes background refetches every time the user refocuses the browser window or navigates between tabs. Setting `staleTime` to 60s keeps fetched GitHub repository data fresh for 1 minute, preventing unnecessary GitHub REST API calls and protecting against rate limits.
+### 6. Infinite Scrolling & Declarative Error Handling
+- **Viewport Observer**: Attached `react-intersection-observer` (`useInView`) to dynamically trigger `fetchNextPage()` whenever the viewport reaches the bottom sentinel node.
+- **UI Error Boundary**: Wrapped view components with **`react-error-boundary`** (`ErrorFallback.tsx`) for graceful fallback rendering upon network errors.
 
 ---
 
-## 🛠️ Technology Stack & Engineering Tools
+## ⚡ Technology Stack & Engineering Tools
 
 | Domain | Technology / Library | Purpose & Rationale |
 | :--- | :--- | :--- |
 | **Frontend Framework** | **React 19** + **Babel React Compiler** | High-performance component-driven architecture with automatic memoization. |
-| **Language** | **TypeScript 6** | End-to-end type safety, strict interface definitions (`Repository`, `Issue`), and runtime error prevention. |
+| **Backend API** | **Express 5** + **Node.js** | Lightweight REST server handling API routing, CORS, and server-side API proxying. |
+| **Database & ORM** | **Drizzle ORM** + **PostgreSQL** (`pg`) | Type-safe database queries and relational storage for watchlist repositories and user notes. |
+| **Language** | **TypeScript 6** | End-to-end type safety, strict interface definitions (`Repository`, `Issue`, `WatchlistType`), and runtime error prevention. |
 | **State & Async Data** | **TanStack Query v5** | Server-state management, caching, background polling, and mutation management. |
 | **Styling & UI** | **Tailwind CSS v4** + **React Icons** | Modern dark-mode aesthetic with utility-first responsive layout design. |
+| **Error Handling** | **`react-error-boundary`** | Declarative error boundary fallback rendering. |
 | **Routing** | **React Router v7** | Client-side routing with route-level query parameter synchronization. |
-| **HTTP Client** | **Axios** | Standardized asynchronous REST requests with bearer token authorization header injection. |
+| **HTTP Client** | **Axios** | Standardized asynchronous REST requests for client and server HTTP calls. |
 | **Build Tooling** | **Vite 8** | Lightning-fast HMR and optimized production bundling. |
 
 ---
@@ -58,60 +66,83 @@ Built using **React 19**, **TypeScript**, and **TanStack Query v5**, this projec
 
 ```text
 devboard/
-├── public/                 # Static assets
+├── api/                          # Express backend API server
+│   ├── config/
+│   │   └── env.ts                # Environment variable loader
+│   ├── routes/
+│   │   └── watchlistRoutes.ts    # Watchlist CRUD routes (/api/watchlist)
+│   ├── index.ts                  # Express app setup & GitHub proxy routes
+│   └── server.ts                 # Server entrypoint (npm run server)
+├── drizzle/                      # Database migrations
+├── public/                       # Static assets
 ├── src/
-│   ├── api/
-│   │   └── axios.ts        # Axios client instance & watchlist CRUD service methods
 │   ├── components/
-│   │   ├── Dashboard.tsx               # Primary dashboard layout & search orchestrator
-│   │   ├── Logo.tsx                    # Branding component
-│   │   ├── NoResultsFound.tsx          # Empty search state component
-│   │   ├── OpenIssues.tsx              # Paginated open issue list with visual label tags
-│   │   ├── RepoDetails.tsx             # Deep-dive view (metadata, stars, forks, licenses, topics)
-│   │   ├── RepoSearchPlaceholder.tsx   # Initial state UI
-│   │   ├── SearchResults.tsx           # Repository list cards with watchlist toggle
-│   │   ├── Watchlist.tsx               # Sidebar watchlist panel with cache-optimistic controls
-│   │   └── WatchlistItemNote.tsx       # Debounced note editing component
-│   ├── data/
-│   │   └── db.json         # Mock database backend for JSON Server (Watchlist CRUD)
+│   │   ├── Dashboard.tsx         # Primary dashboard layout & search orchestrator
+│   │   ├── ErrorFallback.tsx     # Error boundary fallback UI
+│   │   ├── Logo.tsx              # Branding component
+│   │   ├── NoResultsFound.tsx    # Empty search state component
+│   │   ├── OpenIssues.tsx        # Paginated open issue list with visual label tags
+│   │   ├── RepoDetails.tsx       # Deep-dive view (metadata, stars, forks, licenses, topics)
+│   │   ├── RepoSearchPlaceholder.tsx # Initial state UI
+│   │   ├── SearchResults.tsx     # Repository list cards with watchlist toggle
+│   │   ├── Watchlist.tsx         # Sidebar watchlist panel with cache-optimistic controls
+│   │   └── WatchlistItemNote.tsx # Debounced note editing component
+│   ├── db/
+│   │   ├── index.ts              # Drizzle ORM PostgreSQL connection pool setup
+│   │   └── schema.ts             # Watchlist database table schema definition
+│   ├── hooks/
+│   │   ├── useIssueQueries.ts    # TanStack infinite query hooks for open issues
+│   │   ├── useRepoQueries.ts     # Search & repository detail query hooks
+│   │   └── useWatchlistQueries.ts # Optimistic watchlist mutation & fetch hooks
+│   ├── services/
+│   │   ├── githubApi.ts          # Axios wrapper calling backend GitHub proxy endpoints
+│   │   └── watchlistApi.ts       # Axios wrapper calling backend Watchlist endpoints
 │   ├── types/
-│   │   └── index.ts        # Strictly typed TypeScript interfaces (Repository, Issue, Label)
-│   ├── App.tsx             # App wrapper
-│   ├── Router.tsx          # React Router v7 routes (`/` and `/repo/:owner/:name`)
-│   └── main.tsx            # QueryClientProvider & Root mounting point
-├── package.json            # Project dependencies & scripts
-├── tsconfig.json           # TypeScript configuration
-└── vite.config.ts          # Vite build plugin setup
+│   │   └── index.ts              # TypeScript interfaces (Repository, Issue, WatchlistType)
+│   ├── App.tsx                   # App wrapper with ErrorBoundary
+│   ├── Router.tsx                # React Router v7 routes (`/` and `/repo/:owner/:name`)
+│   └── main.tsx                  # QueryClientProvider & Root mounting point
+├── .env                          # Environment variables
+├── drizzle.config.ts             # Drizzle Kit configuration
+├── package.json                  # Dependencies & scripts (`dev`, `server`, `build`)
+├── tsconfig.json                 # TypeScript configuration
+└── vite.config.ts                # Vite build plugin setup
 ```
 
 ---
 
-## ⚙️ Getting Started & Installation Guide
+## 🚀 Getting Started & Installation Guide
 
 ### Prerequisites
 - **Node.js**: v18.x or higher
-- **npm** or **pnpm** / **yarn**
+- **PostgreSQL**: Cloud database (e.g. Neon, Supabase) or local Postgres instance
 
-### 1. Clone & Install Dependencies
+### 1. Install Dependencies
 ```bash
-git clone https://github.com/your-username/devboard.git
-cd devboard
 npm install
 ```
 
 ### 2. Configure Environment Variables
-Create a `.env` file in the root directory and add your GitHub Personal Access Token (PAT) to prevent API rate limiting:
+Create a `.env` file in the root directory:
 ```env
-VITE_GITHUB_TOKEN=your_github_personal_access_token_here
+# Backend & Database Configuration
+PORT=5000
+FRONTEND_ORIGIN=http://localhost:5173
+DATABASE_URL=your_postgresql_connection_string
+GITHUB_TOKEN=your_github_personal_access_token
+
+# Frontend Configuration
+VITE_BACKEND_SERVER=http://localhost:5000/api
 ```
 
-### 3. Run the Local Backend (JSON Server)
-In a separate terminal, launch the mock server for persistent watchlist & note storing:
+### 3. Run the Backend API Server
+In one terminal, launch the Express REST server:
 ```bash
-npx json-server --watch src/data/db.json --port 4000
+npm run server
 ```
 
-### 4. Launch Development Server
+### 4. Launch the Frontend Development Server
+In a second terminal, launch the Vite dev server:
 ```bash
 npm run dev
 ```
@@ -119,11 +150,12 @@ Open [http://localhost:5173](http://localhost:5173) in your browser to explore t
 
 ---
 
-## 💡 Engineering Highlights for Recruiters
+## 🛡️ Engineering Highlights
 
 - **Performance-First Design**: Optimized API calls using debounced state updates, pagination chunks, and conditional query execution (`enabled: query.length > 0`).
-- **Production-Ready Code Standards**: Modular component separation, clear directory structure, strict type declarations without `any` usage, and semantic HTML elements.
-- **Robust Error Handling**: Dedicated loading states, error fallback displays, and defensive data checking across all async interactions.
+- **Production-Ready Security**: Passes sensitive tokens on the server backend rather than exposing them client-side in the browser.
+- **Relational Data Integrity**: Strict schema definitions in PostgreSQL with type-safe access via Drizzle ORM.
+- **Robust Error Handling**: Dedicated loading states, error boundary fallbacks, and defensive data checking across all async interactions.
 
 ---
 
