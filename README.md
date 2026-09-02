@@ -14,6 +14,10 @@
 
 Built using **React 19**, **TypeScript**, **Express.js**, **Drizzle ORM + PostgreSQL**, and **TanStack Query v5**, this project showcases production-grade full-stack architecture, real-time query caching, optimistic UI updates, debounced URL search state synchronization, secure server-side API proxying, and relational database persistence.
 
+🚀 **Ready for Portfolio / CV Showcase**
+
+🔗 **Live Demo:** [devboard-gold.vercel.app](https://devboard-gold.vercel.app/)
+
 ---
 
 ## 🛠️ Key Technical Highlights & Architecture
