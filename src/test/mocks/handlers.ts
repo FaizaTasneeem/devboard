@@ -1,4 +1,4 @@
-import { http, HttpResponse } from 'msw';
+import { delay, http, HttpResponse } from 'msw';
 
 const API_URL = 'http://localhost:5000/api';
 
@@ -17,8 +17,9 @@ export const handlers = [
             }
         ]);
     }),
-    http.delete(`${API_URL}/watchlist/delete/:id`, () => {
+    http.delete(`${API_URL}/watchlist/delete/:id`, async () => {
         // Return 500 server error to simulate backend failure
+        await delay(100);
         return new HttpResponse(null, { status: 500 });
     }),
 ];
