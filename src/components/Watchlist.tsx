@@ -9,7 +9,7 @@ function Watchlist() {
 
     const { isLoading, isError, data, error } = useGetWatchlist();
 
-    const { mutateAsync } = useDeleteFromWatchList();
+    const { mutate } = useDeleteFromWatchList();
 
     function handleWatchItemClick(url: string) {
         window.open(url, '_blank', 'noopener,noreferrer');
@@ -67,7 +67,7 @@ function Watchlist() {
                                         className="text-gray-600 cursor-pointer"
                                         onClick={(e) => {
                                             e.stopPropagation();
-                                            mutateAsync(item.id);
+                                            mutate(item.id);
                                         }}
                                     >x</button>
                                 }
