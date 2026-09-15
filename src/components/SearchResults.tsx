@@ -8,7 +8,7 @@ function SearchResults({ items }: { items: Repository[] }) {
 
     const { data } = useGetWatchlist();
 
-    const { mutateAsync } = useAddToWatchlist();
+    const { mutate } = useAddToWatchlist();
 
     function handleRepoClick(item: Repository) {
         navigate(`repo/${item.owner.login}/${item.name}`);
@@ -64,7 +64,7 @@ function SearchResults({ items }: { items: Repository[] }) {
                             className={`top-2 right-2 w-8 h-8 p-2 border rounded-sm cursor-pointer flex justify-center hover:border-yellow-500 hover:text-yellow-500 absolute ${data?.find((watchedItem: WatchlistType) => watchedItem.fullName === item.full_name) ? 'border-yellow-500 text-yellow-500' : 'border-gray-600 '}`}
                             onClick={(e) => {
                                 e.stopPropagation();
-                                mutateAsync({ item, watchlist: data });
+                                mutate({ item, watchlist: data });
                             }}
                         >
                             <GoStar className={`w-3.5 h-3.5`} />
