@@ -1,5 +1,7 @@
 # DevBoard - Developer Dashboard & GitHub Analytics
 
+![CI](https://github.com/FaizaTasneeem/devboard/actions/workflows/ci.yml/badge.svg)
+
 [![React](https://img.shields.io/badge/React-v19-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-v6-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![TanStack Query](https://img.shields.io/badge/TanStack_Query-v5-FF4154?style=for-the-badge&logo=reactquery&logoColor=white)](https://tanstack.com/query/latest)
