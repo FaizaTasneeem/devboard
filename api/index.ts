@@ -3,6 +3,7 @@ import cors from "cors";
 import axios from "axios";
 import { env } from "./config/env.js";
 import watchlistRoutes from "./routes/watchlistRoutes.js";
+import healthCheckRoutes from "./routes/healthCheckRoutes.js";
 
 const app = express();
 
@@ -15,6 +16,8 @@ app.use(
 );
 
 app.use('/api/watchlist', watchlistRoutes);
+app.use('/api/health', healthCheckRoutes);
+
 
 app.get('/api/repos', async (req, res) => {
     const { data } = await axios.get(
